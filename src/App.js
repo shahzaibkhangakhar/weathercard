@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { TextField } from '@material-ui/core';
 import axios from 'axios';
+import swal from 'sweetalert2';
 
 
 const useStyles = makeStyles({
@@ -32,13 +33,16 @@ const btnstyle = { margin: '8px 0' }
 export default function ImgMediaCard(props) {
   const classes = useStyles();
 
+  //.....................................refresh page................................
   function refreshPage() {
     window.location.reload(false);
   }
+
+  //.....................................handle click.................................
   const handleClick = () => {
     var location = document.getElementById("textfield").value;
     console.log("this is the location " + location)
-    alert("hello there");
+  
     axios
     .get(
      
@@ -49,7 +53,9 @@ console.log(res);
 var res=JSON.parse(JSON.stringify(res));
 var weathertype=res.data.weather[0].description;
 var temp=res.data.main.temp;
-var hTemp =temp-273.15  ;
+var TTemp =temp-273.15  ;
+var hTemp = parseFloat(TTemp).toFixed(2)
+console.log(" using toFixed() method", hTemp);
 
 //date
 var d = new Date(Date.now());
@@ -63,7 +69,11 @@ localStorage.setItem("temperature",hTemp);
 console.log("weather is ",res.data.weather[0].description)
 
 refreshPage();
-}).catch(err => alert("Not Found"))
+}).catch(err => 	swal.fire(
+  'Failed!!',
+  'Please Enter Correct Location ',
+  'error'
+))
 
 
 
@@ -88,7 +98,10 @@ refreshPage();
 
 
   return (
-    <Card className={classes.root}>
+    <div> 
+      <center><h2>Weather Forcast Card</h2>
+</center> 
+         <Card className={classes.root}>
       <CardActionArea>
         <CardMedia
           component="img"
@@ -110,7 +123,7 @@ refreshPage();
             {localweather}
           </Typography>
           <Typography gutterBottom variant="h5" component="h2">
-           {localtemp}
+           {localtemp} °C
           </Typography>
         </CardContent>
       </CardActionArea>
@@ -126,5 +139,6 @@ refreshPage();
      
       </CardActions>
     </Card>
+    </div>
   );
 }
